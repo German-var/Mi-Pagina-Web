@@ -1990,115 +1990,318 @@
 
   <div class="container">
 
+
+    <!-- ENCABEZADO -->
+
     <div class="reviews-heading reveal">
 
       <div>
-        <span class="eyebrow">LO QUE DICEN</span>
+
+        <span class="eyebrow">
+          EXPERIENCIAS REALES
+        </span>
 
         <h2>
-          Clientes felices,<br>
-          <span>proyectos que hablan.</span>
+          Lo que dicen<br>
+          <span>de MODO WEB.</span>
         </h2>
+
       </div>
 
+
       <p>
-        Cada página está pensada para representar la personalidad
-        de cada negocio y hacer que su presencia online se sienta
-        realmente propia.
+        Si ya trabajamos juntos, puedes compartir tu experiencia.
+        Tu reseña aparecerá aquí para que otros negocios puedan
+        conocer cómo es trabajar conmigo.
       </p>
 
     </div>
 
 
-    <div class="reviews-grid">
 
-      <!-- Cuando tengas reseñas reales,
-           puedes reemplazar estas tarjetas -->
+    <!-- CONTENIDO -->
 
-      <article class="review-card review-placeholder reveal">
+    <div class="reviews-layout">
 
-        <div class="review-stars">
-          ☆ ☆ ☆ ☆ ☆
+
+      <!-- ================= FORMULARIO ================= -->
+
+      <div class="review-form-card reveal">
+
+        <div class="review-form-heading">
+
+          <span class="eyebrow">
+            DEJA TU RESEÑA
+          </span>
+
+          <h3>
+            ¿Cómo fue tu<br>
+            experiencia?
+          </h3>
+
+          <p>
+            Tu opinión me ayuda a seguir mejorando y también
+            puede ayudar a otros negocios a conocer mi trabajo.
+          </p>
+
         </div>
 
-        <p>
-          Este espacio está reservado para las experiencias
-          de los primeros clientes de MODO WEB.
-        </p>
 
-        <div class="review-person">
-          <div class="review-avatar">MW</div>
+        <form id="reviewForm">
 
-          <div>
-            <strong>Próximamente</strong>
-            <span>Cliente MODO WEB.</span>
+
+          <!-- NOMBRE -->
+
+          <div class="review-field">
+
+            <label for="reviewName">
+              Nombre
+            </label>
+
+            <input
+              type="text"
+              id="reviewName"
+              name="name"
+              placeholder="Tu nombre"
+              maxlength="60"
+              autocomplete="name"
+              required
+            >
+
           </div>
-        </div>
-
-      </article>
 
 
-      <article class="review-card review-placeholder reveal">
 
-        <div class="review-stars">
-          ☆ ☆ ☆ ☆ ☆
-        </div>
+          <!-- NEGOCIO -->
 
-        <p>
-          ¿Ya trabajamos juntos? Tu opinión puede ayudar a otros
-          negocios a conocer cómo es trabajar con MODO WEB.
-        </p>
+          <div class="review-field">
 
-        <div class="review-person">
-          <div class="review-avatar">♡</div>
+            <label for="reviewBusiness">
 
-          <div>
-            <strong>Tu experiencia</strong>
-            <span>Puede aparecer aquí.</span>
+              Negocio
+
+              <span>
+                opcional
+              </span>
+
+            </label>
+
+            <input
+              type="text"
+              id="reviewBusiness"
+              name="business"
+              placeholder="Nombre de tu negocio"
+              maxlength="80"
+            >
+
           </div>
-        </div>
-
-      </article>
-
-    </div>
 
 
-    <!-- DEJAR RESEÑA -->
 
-    <div class="leave-review reveal">
+          <!-- CALIFICACIÓN -->
 
-      <div class="leave-review-icon">
-        ✦
+          <div class="review-field">
+
+            <label>
+              Calificación
+            </label>
+
+
+            <div
+              class="rating-select"
+              id="ratingSelect"
+              role="radiogroup"
+              aria-label="Selecciona una calificación"
+            >
+
+              <button
+                type="button"
+                data-rating="1"
+                aria-label="1 estrella"
+              >
+                ★
+              </button>
+
+
+              <button
+                type="button"
+                data-rating="2"
+                aria-label="2 estrellas"
+              >
+                ★
+              </button>
+
+
+              <button
+                type="button"
+                data-rating="3"
+                aria-label="3 estrellas"
+              >
+                ★
+              </button>
+
+
+              <button
+                type="button"
+                data-rating="4"
+                aria-label="4 estrellas"
+              >
+                ★
+              </button>
+
+
+              <button
+                type="button"
+                data-rating="5"
+                aria-label="5 estrellas"
+              >
+                ★
+              </button>
+
+            </div>
+
+
+            <input
+              type="hidden"
+              id="reviewRating"
+              name="rating"
+            >
+
+          </div>
+
+
+
+          <!-- RESEÑA -->
+
+          <div class="review-field">
+
+            <label for="reviewText">
+              Tu experiencia
+            </label>
+
+            <textarea
+              id="reviewText"
+              name="review"
+              rows="5"
+              maxlength="500"
+              placeholder="Cuéntame qué te pareció trabajar conmigo..."
+              required
+            ></textarea>
+
+
+            <span class="review-limit">
+              Máximo 500 caracteres
+            </span>
+
+          </div>
+
+
+
+          <!-- BOTÓN -->
+
+          <button
+            type="submit"
+            class="btn btn-primary review-submit"
+            id="reviewSubmit"
+          >
+
+            Publicar reseña
+
+            <span>
+              ↗
+            </span>
+
+          </button>
+
+
+
+          <!-- MENSAJE -->
+
+          <p
+            class="review-message"
+            id="reviewMessage"
+            aria-live="polite"
+          ></p>
+
+        </form>
+
       </div>
 
-      <div class="leave-review-copy">
 
-        <span class="eyebrow">
-          ¿YA TRABAJAMOS JUNTOS?
-        </span>
 
-        <h3>
-          Cuéntame cómo fue<br>
-          tu experiencia.
-        </h3>
+      <!-- ================= RESEÑAS PUBLICADAS ================= -->
 
-        <p>
-          Tu opinión me ayuda a seguir mejorando MODO WEB
-          y también ayuda a otros negocios a conocer mi trabajo.
-        </p>
+      <div class="reviews-display reveal">
+
+
+        <div class="reviews-display-top">
+
+
+          <div>
+
+            <span class="eyebrow">
+              RESEÑAS
+            </span>
+
+            <h3>
+              Experiencias de<br>
+              clientes.
+            </h3>
+
+          </div>
+
+
+
+          <div class="reviews-count">
+
+            <strong id="reviewsCount">
+              0
+            </strong>
+
+            <span>
+              reseñas
+            </span>
+
+          </div>
+
+        </div>
+
+
+
+        <!--
+          AQUÍ SE CARGARÁN AUTOMÁTICAMENTE
+          LAS RESEÑAS GUARDADAS EN SUPABASE
+        -->
+
+        <div
+          class="reviews-list"
+          id="reviewsList"
+        >
+
+
+          <!-- ESTADO VACÍO -->
+
+          <div class="reviews-empty">
+
+            <div class="reviews-empty-icon">
+              ☆
+            </div>
+
+            <strong>
+              Todavía no hay reseñas.
+            </strong>
+
+            <p>
+              Sé de los primeros clientes en compartir
+              su experiencia con MODO WEB.
+            </p>
+
+          </div>
+
+
+        </div>
 
       </div>
-
-
-      <a
-        href="https://wa.me/526462921358?text=Hola%20German%2C%20quiero%20dejar%20una%20rese%C3%B1a%20sobre%20mi%20experiencia%20con%20MODO%20WEB."
-        target="_blank"
-        rel="noopener"
-        class="btn btn-primary review-button"
-      >
-        Dejar una reseña
-        <span>↗</span>
-      </a>
 
     </div>
 
@@ -2627,7 +2830,8 @@
   </a>
 
 
-  <script src="script.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="script.js"></script>
 
 </body>
 </html>
