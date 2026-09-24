@@ -1,4 +1,4 @@
-/* =====================================================
+    /* =====================================================
    MODO WEB.
    Web Design by German Varela
 ===================================================== */
@@ -468,162 +468,267 @@ document
 ===================================================== */
 
 const reviewForm =
-  document.getElementById(
-    "reviewForm"
-  );
-
+  document.getElementById("reviewForm");
 
 const reviewName =
-  document.getElementById(
-    "reviewName"
-  );
-
+  document.getElementById("reviewName");
 
 const reviewBusiness =
-  document.getElementById(
-    "reviewBusiness"
-  );
-
+  document.getElementById("reviewBusiness");
 
 const reviewRating =
-  document.getElementById(
-    "reviewRating"
-  );
-
+  document.getElementById("reviewRating");
 
 const reviewText =
-  document.getElementById(
-    "reviewText"
-  );
-
+  document.getElementById("reviewText");
 
 const reviewSubmit =
-  document.getElementById(
-    "reviewSubmit"
-  );
-
+  document.getElementById("reviewSubmit");
 
 const reviewMessage =
-  document.getElementById(
-    "reviewMessage"
-  );
-
-
-const ratingButtons =
-  document.querySelectorAll(
-    "#ratingSelect button"
-  );
-
+  document.getElementById("reviewMessage");
 
 const reviewsList =
-  document.getElementById(
-    "reviewsList"
-  );
-
+  document.getElementById("reviewsList");
 
 const reviewsCount =
-  document.getElementById(
-    "reviewsCount"
-  );
+  document.getElementById("reviewsCount");
+
+const ratingButtons =
+  document.querySelectorAll("#ratingSelect button");
 
 
 let selectedRating = 0;
 
 
-/* =====================================================
-   SELECCIONAR ESTRELLAS
-===================================================== */
+/* ================= PINTAR ESTRELLAS ================= */
 
-ratingButtons.forEach(
-  (button) => {
+function paintStars(rating, className) {
 
-    button.addEventListener(
-      "click",
-      () => {
+  ratingButtons.forEach((star) => {
 
-        selectedRating =
-          Number(
-            button.dataset.rating
-          );
+    const starValue =
+      Number(star.dataset.rating);
 
-
-        reviewRating.value =
-          selectedRating;
-
-
-        ratingButtons.forEach(
-          (star) => {
-
-            const value =
-              Number(
-                star.dataset.rating
-              );
-
-
-            if (
-              value <=
-              selectedRating
-            ) {
-
-              star.classList.add(
-                "active"
-              );
-
-            } else {
-
-              star.classList.remove(
-                "active"
-              );
-
-            }
-
-          }
-        );
-
-      }
+    star.classList.remove(
+      "active",
+      "preview"
     );
 
-  }
-);
+    if (starValue <= rating) {
+
+      star.classList.add(className);
+
+    }
+
+  });
+
+}
+
+
+/* ================= CLICK ESTRELLAS ================= */
+
+ratingButtons.forEach((button) => {
+
+  button.addEventListener("click", () => {
+
+    selectedRating =
+      Number(button.dataset.rating);
+
+    reviewRating.value =
+      selectedRating;
+
+    paintStars(
+      selectedRating,
+      "active"
+    );
+
+  });
+
+
+  /* HOVER */
+
+  button.addEventListener("mouseenter", () => {
+
+    const hoverRating =
+      Number(button.dataset.rating);
+
+    paintStars(
+      hoverRating,
+      "preview"
+    );
+
+  });
+
+});
+
+
+/* CUANDO SALES DE LAS ESTRELLAS */
+
+const ratingSelect =
+  document.getElementById("ratingSelect");
+
+ratingSelect.addEventListener("mouseleave", () => {
+
+  paintStars(
+    selectedRating,
+    "active"
+  );
+
+});
 
 
 /* =====================================================
-   CARGAR RESEÑAS DE SUPABASE
+   CREAR TARJETA DE RESEÑA
+===================================================== */
+
+function createReviewCard(item) {
+
+  const card =
+    document.createElement("article");
+
+  card.className =
+    "review-card";
+
+
+  /* ESTRELLAS */
+
+  const stars =
+    document.createElement("div");
+
+  stars.className =
+    "review-stars";
+
+
+  const rating =
+    Math.max(
+      1,
+      Math.min(
+        5,
+        Number(item.rating)
+      )
+    );
+
+
+  stars.textContent =
+    "★".repeat(rating) +
+    "☆".repeat(5 - rating);
+
+
+  /* TEXTO */
+
+  const text =
+    document.createElement("p");
+
+  text.textContent =
+    item.review;
+
+
+  /* PERSONA */
+
+  const person =
+    document.createElement("div");
+
+  person.className =
+    "review-person";
+
+
+  const avatar =
+    document.createElement("div");
+
+  avatar.className =
+    "review-avatar";
+
+
+  const safeName =
+    item.name
+      ? item.name.trim()
+      : "Cliente";
+
+
+  const initials =
+    safeName
+      .split(" ")
+      .filter(Boolean)
+      .map(word =>
+        word.charAt(0)
+      )
+      .join("")
+      .substring(0, 2)
+      .toUpperCase();
+
+
+  avatar.textContent =
+    initials || "MW";
+
+
+  const info =
+    document.createElement("div");
+
+
+  const name =
+    document.createElement("strong");
+
+  name.textContent =
+    safeName;
+
+
+  const business =
+    document.createElement("span");
+
+  business.textContent =
+    item.business &&
+    item.business.trim()
+      ? item.business
+      : "Cliente MODO WEB.";
+
+
+  info.appendChild(name);
+  info.appendChild(business);
+
+  person.appendChild(avatar);
+  person.appendChild(info);
+
+  card.appendChild(stars);
+  card.appendChild(text);
+  card.appendChild(person);
+
+  reviewsList.appendChild(card);
+
+}
+
+
+/* =====================================================
+   CARGAR RESEÑAS
 ===================================================== */
 
 async function loadReviews() {
 
+  console.log(
+    "Cargando reseñas..."
+  );
+
+
   const {
     data,
     error
-  } =
-    await supabaseClient
-
-      .from("reviews")
-
-      .select(
-        `
-        id,
-        created_at,
-        name,
-        business,
-        rating,
-        review
-        `
-      )
-
-      .order(
-        "created_at",
-        {
-          ascending: false
-        }
-      );
+  } = await supabaseClient
+    .from("reviews")
+    .select(
+      "id, created_at, name, business, rating, review"
+    )
+    .order(
+      "created_at",
+      {
+        ascending: false
+      }
+    );
 
 
   if (error) {
 
     console.error(
-      "Error al cargar reseñas:",
+      "ERROR SUPABASE SELECT:",
       error
     );
 
@@ -640,29 +745,32 @@ async function loadReviews() {
         </div>
 
         <strong>
-          No se pudieron cargar las reseñas.
+          Error al cargar reseñas
         </strong>
 
         <p>
-          Intenta actualizar la página.
+          ${error.message}
         </p>
 
       </div>
     `;
-
 
     return;
 
   }
 
 
+  console.log(
+    "Reseñas:",
+    data
+  );
+
+
   reviewsCount.textContent =
     data.length;
 
 
-  if (
-    data.length === 0
-  ) {
+  if (data.length === 0) {
 
     reviewsList.innerHTML = `
       <div class="reviews-empty">
@@ -684,7 +792,6 @@ async function loadReviews() {
       </div>
     `;
 
-
     return;
 
   }
@@ -694,220 +801,11 @@ async function loadReviews() {
     "";
 
 
-  data.forEach(
-    (item) => {
+  data.forEach((review) => {
 
-      createReviewCard(
-        item
-      );
+    createReviewCard(review);
 
-    }
-  );
-
-}
-
-
-/* =====================================================
-   CREAR TARJETA DE RESEÑA
-===================================================== */
-
-function createReviewCard(
-  item
-) {
-
-  const card =
-    document.createElement(
-      "article"
-    );
-
-
-  card.classList.add(
-    "review-card"
-  );
-
-
-  /* ================= ESTRELLAS ================= */
-
-  const stars =
-    document.createElement(
-      "div"
-    );
-
-
-  stars.classList.add(
-    "review-stars"
-  );
-
-
-  const safeRating =
-    Math.max(
-      1,
-      Math.min(
-        5,
-        Number(
-          item.rating
-        )
-      )
-    );
-
-
-  stars.textContent =
-
-    "★".repeat(
-      safeRating
-    ) +
-
-    "☆".repeat(
-      5 -
-      safeRating
-    );
-
-
-  /* ================= TEXTO ================= */
-
-  const reviewParagraph =
-    document.createElement(
-      "p"
-    );
-
-
-  reviewParagraph.textContent =
-    item.review;
-
-
-  /* ================= PERSONA ================= */
-
-  const person =
-    document.createElement(
-      "div"
-    );
-
-
-  person.classList.add(
-    "review-person"
-  );
-
-
-  const avatar =
-    document.createElement(
-      "div"
-    );
-
-
-  avatar.classList.add(
-    "review-avatar"
-  );
-
-
-  const cleanName =
-    item.name
-      ? item.name.trim()
-      : "";
-
-
-  const initials =
-    cleanName
-
-      .split(" ")
-
-      .filter(Boolean)
-
-      .map(
-        (word) =>
-          word.charAt(0)
-      )
-
-      .join("")
-
-      .substring(
-        0,
-        2
-      )
-
-      .toUpperCase();
-
-
-  avatar.textContent =
-    initials || "MW";
-
-
-  const info =
-    document.createElement(
-      "div"
-    );
-
-
-  const nameElement =
-    document.createElement(
-      "strong"
-    );
-
-
-  nameElement.textContent =
-    cleanName ||
-    "Cliente";
-
-
-  const businessElement =
-    document.createElement(
-      "span"
-    );
-
-
-  if (
-    item.business &&
-    item.business.trim() !== ""
-  ) {
-
-    businessElement.textContent =
-      item.business;
-
-  } else {
-
-    businessElement.textContent =
-      "Cliente MODO WEB.";
-
-  }
-
-
-  info.appendChild(
-    nameElement
-  );
-
-
-  info.appendChild(
-    businessElement
-  );
-
-
-  person.appendChild(
-    avatar
-  );
-
-
-  person.appendChild(
-    info
-  );
-
-
-  card.appendChild(
-    stars
-  );
-
-
-  card.appendChild(
-    reviewParagraph
-  );
-
-
-  card.appendChild(
-    person
-  );
-
-
-  reviewsList.appendChild(
-    card
-  );
+  });
 
 }
 
@@ -926,7 +824,6 @@ reviewForm.addEventListener(
     reviewMessage.textContent =
       "";
 
-
     reviewMessage.className =
       "review-message";
 
@@ -934,16 +831,14 @@ reviewForm.addEventListener(
     const name =
       reviewName.value.trim();
 
-
     const business =
       reviewBusiness.value.trim();
-
 
     const review =
       reviewText.value.trim();
 
 
-    /* ================= VALIDACIONES ================= */
+    /* VALIDACIONES */
 
     if (!name) {
 
@@ -960,12 +855,12 @@ reviewForm.addEventListener(
 
 
     if (
-      selectedRating <
-      1
+      selectedRating < 1 ||
+      selectedRating > 5
     ) {
 
       reviewMessage.textContent =
-        "Selecciona una calificación.";
+        "Selecciona de 1 a 5 estrellas.";
 
       reviewMessage.classList.add(
         "error"
@@ -990,56 +885,55 @@ reviewForm.addEventListener(
     }
 
 
-    /* ================= PUBLICANDO ================= */
+    /* BOTÓN */
 
     reviewSubmit.disabled =
       true;
 
-
-    reviewSubmit.innerHTML =
+    reviewSubmit.textContent =
       "Publicando...";
 
 
+    console.log(
+      "Enviando a Supabase:",
+      {
+        name,
+        business,
+        rating: selectedRating,
+        review
+      }
+    );
+
+
     const {
+      data,
       error
-    } =
-      await supabaseClient
-
-        .from(
-          "reviews"
-        )
-
-        .insert([
-          {
-
-            name:
-              name,
-
-            business:
-              business,
-
-            rating:
-              selectedRating,
-
-            review:
-              review
-
-          }
-        ]);
+    } = await supabaseClient
+      .from("reviews")
+      .insert([
+        {
+          name: name,
+          business: business,
+          rating: selectedRating,
+          review: review
+        }
+      ])
+      .select();
 
 
-    /* ================= ERROR ================= */
+    /* ERROR */
 
     if (error) {
 
       console.error(
-        "Error al publicar reseña:",
+        "ERROR SUPABASE INSERT:",
         error
       );
 
 
       reviewMessage.textContent =
-        "No se pudo publicar la reseña.";
+        "ERROR: " +
+        error.message;
 
 
       reviewMessage.classList.add(
@@ -1050,17 +944,21 @@ reviewForm.addEventListener(
       reviewSubmit.disabled =
         false;
 
-
       reviewSubmit.innerHTML =
         'Publicar reseña <span>↗</span>';
-
 
       return;
 
     }
 
 
-    /* ================= ÉXITO ================= */
+    console.log(
+      "Reseña guardada:",
+      data
+    );
+
+
+    /* ÉXITO */
 
     reviewMessage.textContent =
       "Reseña publicada correctamente.";
@@ -1082,14 +980,9 @@ reviewForm.addEventListener(
       "";
 
 
-    ratingButtons.forEach(
-      (star) => {
-
-        star.classList.remove(
-          "active"
-        );
-
-      }
+    paintStars(
+      0,
+      "active"
     );
 
 
@@ -1101,14 +994,17 @@ reviewForm.addEventListener(
       'Publicar reseña <span>↗</span>';
 
 
-    /* VOLVER A CARGAR */
-
     await loadReviews();
 
   }
 );
 
 
+/* =====================================================
+   INICIAR
+===================================================== */
+
+loadReviews();
 /* =====================================================
    CURRENT YEAR
 ===================================================== */
