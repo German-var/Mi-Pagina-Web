@@ -4,6 +4,18 @@
 ===================================================== */
 
 
+/* ================= SUPABASE ================= */
+
+const SUPABASE_URL = "https://caxpsvraudgivyvbewuc.supabase.co";
+
+const SUPABASE_KEY = "sb_publishable_fDzVqKPbjXIDBeRir4BFlw_Cvh2thKe";
+
+const supabaseClient = supabase.createClient(
+  SUPABASE_URL,
+  SUPABASE_KEY
+);
+
+
 /* ================= HEADER ================= */
 
 const header = document.getElementById("header");
